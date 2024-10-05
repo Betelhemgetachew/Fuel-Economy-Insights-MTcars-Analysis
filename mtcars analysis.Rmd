@@ -1,0 +1,260 @@
+---
+title: "mtcars analysis"
+author: "Betelhem Getachew"
+date: "2024-02-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#mtcars analysis
+
+##Loading the dataset and installing packages
+```{r}
+data("mtcars")
+library(ggplot2)
+```
+
+mt cars is a built-in data-set in R, which means  it is included as part of the base R installation.This data-set is readily available for users to load and analyze without the need for any additional data import or download.
+
+```{r cars}
+?mtcars
+head(mtcars,8)
+```
+Motor Trend Car Road Tests(mtcars) is a data that was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).The data-set comprises of 32 rows(observations) on 11 numeric variables.
+
+  1, mpg-	Miles/(US) gallon
+	2, cy-l	Number of cylinders
+	3, disp-	Displacement (cu.in.)
+	4, hp	Gross- horsepower
+	5, drat	Rear- axle ratio
+	6, wt	Weight- (1000 lbs)
+	7, qsec-	1/4 mile time
+	8, vs-	Engine (0 = V-shaped, 1 = straight)
+	9, am-	Transmission (0 = automatic, 1 = manual)
+  10,gear-	Number of forward gears
+  11, carb-	Number of carburetors
+
+##Descriptive Analysis
+
+###Calculating the mean and standard deviation of both horsepower and miles per gallon.
+
+sapply() function is used to loop through the columns of the data data-frame. Inside the sapply() function,  an anonymous function is defined that calculates the mean and standard deviation for each column using the mean() and sd() functions
+```{r,}
+mpg_hp<-c("mpg","hp")
+result<-sapply(mtcars[mpg_hp],function(x)c(mean=mean(x),sd=sd(x)))
+result
+```
+####Interpretation
+-The average fuel efficiency(mpg) for the vehicles in the mtcars data-set is approximately 20.09 miles per gallon (mpg), indicating that, on average, they can travel that distance with one gallon of fuel.
+
+-The standard deviation of 6.027 for "mpg" indicates the variability or spread of the fuel efficiency values in the data-set. A higher standard deviation suggests a wider range of fuel efficiencies among the vehicles. In this case, the standard deviation of 6.026948 implies that the fuel efficiencies of the vehicles in the data-set can deviate from the mean by around 6.03 miles per gallon on average.
+
+-For "hp," the mean value indicates that On average, the vehicles have a horsepower rating of approximately 146.69.
+ 
+-The standard deviation of 68.56 for "hp" indicates the variability or spread of the horsepower values in the data-set. In this case,the horsepower ratings of the vehicles in the data-set can deviate from the mean by around 68.56 on average.
+
+###Providing the five-number summary (minimum, 1st quartile, median, 3rd quartile, maximum) for both horsepower and miles per gallon (mpg)
+
+The five-number summary is a statistical summary that provides information about the distribution of a data-set. It consists of five key values:
+
+####Five number summary of hp
+
+```{r}
+hp_summary<-fivenum(mtcars$hp)
+hp_summary
+```
+```{r}
+boxplot(mtcars["hp"], col = "purple",main = "Boxplot of hp")
+```
+#####Interpretation
+    From the five number summary the following can be observed:
+
+-Minimum: The minimum value of "hp" is 52 indicating the lowest observed horsepower in the dataset.
+
+-1st Quartile (Q1): The first quartile, is 96. This means that 25% of the data points have a horsepower equal to or lower than 96.
+
+-Median: The median is 123. It represents the midpoint of the data when arranged in ascending order. Approximately 50% of the data points have a horsepower equal to or below the median.
+
+-3rd Quartile (Q3): The third quartile, or upper quartile, is 180. This means that 75% of the data points have a horsepower equal to or lower than 180.
+
+-Maximum: The maximum value of "hp" is 335. This indicates the highest observed horsepower in the dataset.
+
+  From the boxplot:
+The upper line of the box plot represents the 3rd quartile.
+
+The lower line of the box plot represents the 1st quartile.
+ 
+The line within the boxplot represents the median. As it can be seen,the median line in a box plot is closer to the bottom edge of the box,this indicates that the distribution of the data is skewed towards the lower values. This means that the majority of the data points are concentrated towards the lower end of the range.
+
+The lines extending from the box (often with the ends capped) are the whiskers. They represent the range of the data, excluding any outliers.
+
+As it can be seen from the above box plot,there is a small circle above the whiskers.This circle represents an outlier that is a value of the hp out of the range of the data.
+
+####Five number summary of mpg
+
+```{r}
+mpg_summary<-fivenum(mtcars$mpg)
+mpg_summary
+```
+```{r}
+boxplot(mtcars["mpg"], col = "green",main = "Boxplot of mpg")
+```
+#####Interpretation
+     
+  From the five number summary the following can be observed
+-Minimum: The minimum value of "mpg" is 10.40. This indicates the smallest observed miles per gallon in the dataset.
+
+-1st Quartile (Q1): The first quartile, or lower quartile, is 15.35. This means that 25% of the data points have a miles per gallon value equal to or lower than 15.35.
+
+-Median: The median is 19.20. It represents the middle value of the dataset when arranged in ascending order. Around 50% of the data points have a miles per gallon value equal to or below the median.
+ The line within the boxplot represents the median.
+
+-3rd Quartile (Q3): The third quartile, or upper quartile, is 22.80. This means that 75% of the data points have a miles per gallon value equal to or lower than 22.80.
+
+-Maximum: The maximum value of "mpg" is 33.90. This indicates the largest observed miles per gallon in the dataset.
+
+  From the boxplot
+-The upper line of the box plot represents the 3rd quartile.
+
+-The lower line of the box plot represents the 1st quartile.
+ 
+-The line within the boxplot represents the median.As demonstrated in the box plot, the median line in a box plot is positioned in the middle of the box, suggesting that the distribution of the data is roughly symmetrical. In this case, the median is approximately equal to the midpoint between the lower quartile (Q1) and the upper quartile (Q3).
+
+-The lines extending from the box (often with the ends capped) are the whiskers. They represent the range of the data, excluding any outliers.
+
+#####Idetifying cars with the lowest and highest hp
+
+```{r}
+lowest_hp<-rownames(mtcars)[which.min((mtcars$hp))]
+lowest_hp
+highest_hp<-rownames(mtcars)[which.max((mtcars$hp))]
+highest_hp
+```
+#####Idetifying cars with the lowest and highest mpg
+```{r}
+lowest_mpg<-rownames(mtcars)[which.min((mtcars$mpg))]
+lowest_mpg
+highest_mpg<-rownames(mtcars)[which.max((mtcars$mpg))]
+highest_mpg
+```
+
+##Pearson Correlation Analysis
+Correlation analysis, also known as correlation coefficient analysis, is a statistical technique used to measure the strength and direction of the relationship between two or more variables. It quantifies the extent to which changes in one variable are associated with changes in another variable.
+
+```{r}
+correlation<-cor(mtcars$hp,mtcars$mpg)
+correlation
+```
+###Interpretation
+A correlation coefficient of -0.776 between "hp" (horsepower) and "mpg" (miles per gallon) suggests a strong negative relationship between these two variables in the context of analyzing a data-set.
+
+In this case, the negative sign of the correlation coefficient indicates that as horsepower (hp) increases, fuel efficiency (mpg) tends to decrease, and vice versa. This negative correlation suggests that vehicles with higher horsepower tend to have lower fuel efficiency, while vehicles with lower horsepower tend to have higher fuel efficiency.
+
+A correlation coefficient of -0.776 suggests a highly noticeable and substantial negative relationship between the variables of horsepower (hp) and fuel efficiency (mpg). It indicates that as the horsepower increases, there is a strong tendency for the fuel efficiency to decrease. The magnitude of the correlation coefficient, being close to -1, emphasizes the significant and robust nature of this negative association between horsepower and fuel efficiency.
+ 
+####Practical Implication:
+The negative correlation between horsepower (hp) and fuel efficiency (mpg) has practical applications in various fields.
+   1,Designing and Engineering of Vehicles:
+The negative correlation informs Engineers to optimize engine performance and fuel efficiency by balancing horsepower requirements with fuel consumption. It helps in developing more efficient engines, hybrid technologies, or electric vehicles to improve overall energy efficiency.
+   
+   2,Customer decision making:
+consumers can consider this correlation when making vehicle choices, aligning with their desired balance between performance and fuel economy
+
+   3,Environmental Impact: 
+The relationship between hp and mpg is relevant in assessing the environmental impact of automobiles. Higher horsepower vehicles, which typically have lower fuel efficiency, tend to produce more greenhouse gas emissions. Policymakers and environmental organizations can utilize this information to promote fuel-efficient vehicles and develop regulations to reduce carbon emissions.
+
+  4,Government Regulations
+Government regulations and standards concerning vehicle emissions and fuel efficiency can be influenced by the correlation between horsepower (hp) and miles per gallon (mpg). These regulations aim to encourage or mandate the production of vehicles that are more fuel-efficient, thus reducing the environmental impact of transportation. They may include measures such as incentives for manufacturing fuel-efficient vehicles or implementing stricter requirements for emissions and fuel efficiency. The goal is to align government policies with the understanding that higher horsepower generally corresponds to lower fuel efficiency and greater emissions.
+
+##Simple Linear Regression:
+The lm(linear model) function is used to build a linear regression model. In the formula "mpg~hp", mpg=y and hp=x
+```{r}
+Regression_model<-lm(mpg~hp,data=mtcars)
+summary(Regression_model)
+```
+###regression Equation
+The linear regression equation is expressed as:
+
+y=mx+b
+
+where "y" is the dependent variable
+      "x" is the independent variable 
+      "m" is the slope(coefficient of the independent variable)
+      "b" is the intercept
+      
+In this case y=mpg
+             x=hp
+             m=-0.068
+             b=30.099
+             
+So the Equation will be:     mpg=-0.068hp+30.099
+
+###Interpreting the slope and intercept in the context of the data.
+
+Intercept: The intercept (also known as the y-intercept or constant term) is the value of the dependent variable  when all independent variables  are equal to zero. In this case, it is the value of miles per gallon(mpg) when the horse power(hp) is equal to zero. From the regression model, the intercept estimate is 30.099. This means that when the horsepower is zero, the estimated average miles per gallon is 30.09886.
+
+  mpg=-0.068hp+30.099
+  mpg=-0.068(0)+30.099
+  mpg=30.099...........intercept      
+
+Coefficient: The coefficient represents the estimated change in the dependent variable associated with a one-unit increase in the independent variable.In this case,it is the estimated change in miles per gallon(mpg) associated with one unit increase in horse power(hp).  In the output you provided, the coefficient estimate for "hp" is -0.06823. This suggests that for each unit increase in horsepower, the estimated average miles per gallon decreases by 0.06823.
+
+The negative sign of the coefficient(negative slope) indicates that the two variables are inversely related.
+
+  mpg=-0.068hp+30.099
+  -0.068................coefficient
+  
+Given the coefficient and intercept, one can predict the value of miles per gallon at any value of horsepower.Let's predict the mpg when hp=50,100,150,200,250,300
+
+```{r}
+Newdata<-data.frame(hp=c(50,100,150,200,250,300))
+Predicted_mpg<-predict(Regression_model,newdata=Newdata)
+Predicted_mpg
+```
+From the above result, it can be observed that as the horsepower(hp) increases from 50 to 300,the miles per gallon(mpg) decreases from 26.68 to 9.63. It can be clearly seen that increment in horse power results in decreased mpg(miles covered using 1 gallon of fuel).
+
+It can also be calculated manually using the regression formula.
+  
+  mpg=-0.068hp+30.099
+  mpg=-0.068(50)+30.099........when hp=50
+  mpg=26.69
+  
+###Plot the scatter plot along with the regression line.
+```{r}
+ggplot(data=mtcars,aes(x=hp , y=mpg))+
+  geom_point(color="blue",shape=16,size=3)+
+  geom_smooth(method="lm")+
+  labs(x="Horse power(hp)",y="Miles/(US)gallon",title="Horse power vs Miles/(US)gallon")
+  
+```
+####Interpretation of the scatter plot
+1,Direction:
+The scatter plot shows a downward trend, meaning that as the independent variable(Horse power) increases, the dependent variable(mpg) tends to decrease.
+
+2,Scatter:
+The data points will be scattered around the regression line. The scatter indicates the variability in the relationship between the variables, suggesting that there may be other factors influencing the dependent variable(mpg)
+
+3,Confidence Interval:
+The confidence interval is typically represented as a shaded band around the line. The width of the band represents the range of plausible regression lines which means the range within which the true regression line is likely to fall with a given level of confidence. A wider confidence interval implies higher uncertainty in the estimation.
+
+4,Strength of Correlation:
+The steepness of the regression line can provide insight into the strength of the negative correlation. A steeper slope indicates a stronger negative relationship, whereas a shallower slope indicates a weaker negative relationship.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
